@@ -1,5 +1,4 @@
-import sqlite3
-import click
+import sqlite3, csv, click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
@@ -20,8 +19,16 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
+    cur = db.cursor()
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+    with current_app.open_resource('vps.csv', 'r') as csvfile:
+        dr = csv.DictReader(csvfile)
+        to_db = [(i['vpsname'], i['ip']) for i in dr]
+    """with open ('vps.csv', 'r') as csvfile:
+        dr = csv.DictReader(csvfile)
+        to_db = [(i['vpsname'], i['ip']) for i in dr]"""
+    cur.executemany('INSERT INTO vps (vpsname, ip) VALUES(?, ?)', to_db)
 
 @click.command('init-db')
 @with_appcontext
