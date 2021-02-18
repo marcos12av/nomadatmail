@@ -25,19 +25,20 @@ def emailconf():
             error = 'Favor de ingresar un email valido'
         if error is None:
             dominio = "webmail." + email[(email.find("@")+1):]
-            ping = f'ping {dominio} -c 1 '
-            #grep = | grep -oE "([0-9]{1,3}[\.]){3}[0-9]{1,3})" | head -n 1
-            ipdominio = os.system(ping)
-            #db = get_db()
+            #webmail.example.com
+            grep = '| grep -oE "(([0-9]{1,3}[\.]){3}[0-9]{1,3})" | head -n 1'
+            ping = f'ping {dominio} -c 1 | head -n1'
+            print (ping)
+            #ping webmail.example.com -c 1 | grep -oE "(([0-9]{1,3}[\.]){3}[0-9]{1,3})" | head -n 1
+            ipwebmail = os.system(ping)
+            
+            print (ipwebmail)
+            db = get_db()
             error = None
-            vpsname = "server.com"
-            """vpsname = db.execute(
+            vpsname = db.execute(
                 'SELECT vpsname FROM vps WHERE ip = ?', (ipwebmail,)
             ).fetchone()
-            if vpsname == None:
-                vpsname = db.execute(
-                    'SELECT vpsname FROM vps WHERE ip = ?', (ipdominio,)
-                ).fetchone()"""
+            
         if error != None:
             flash(error)
         return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport)

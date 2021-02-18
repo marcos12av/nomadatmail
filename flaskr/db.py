@@ -22,14 +22,7 @@ def init_db():
     cur = db.cursor()
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
-    with current_app.open_resource('vps.csv', 'r') as csvfile:
-        dr = csv.DictReader(csvfile)
-        to_db = [(i['vpsname'], i['ip']) for i in dr]
-    """with open ('vps.csv', 'r') as csvfile:
-        dr = csv.DictReader(csvfile)
-        to_db = [(i['vpsname'], i['ip']) for i in dr]"""
-    cur.executemany('INSERT INTO vps (vpsname, ip) VALUES(?, ?)', to_db)
-
+    
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
