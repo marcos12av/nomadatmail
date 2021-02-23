@@ -3,7 +3,7 @@ from flask import (
 )
 
 from flaskr.db import get_db
-import os
+import subprocess, re
 bp = Blueprint('emailconf', __name__, url_prefix='/')
 
 @bp.route('/', methods=('GET', 'POST'))
@@ -25,20 +25,18 @@ def emailconf():
             error = 'Favor de ingresar un email valido'
         if error is None:
             dominio = "webmail." + email[(email.find("@")+1):]
-            #webmail.example.com
-            grep = '| grep -oE "(([0-9]{1,3}[\.]){3}[0-9]{1,3})" | head -n 1'
-            ping = f'ping {dominio} -c 1 | head -n1'
-            print (ping)
-            #ping webmail.example.com -c 1 | grep -oE "(([0-9]{1,3}[\.]){3}[0-9]{1,3})" | head -n 1
-            ipwebmail = os.system(ping)
+            ping = ['ping', '-c', '1', dominio]
+            runping = subprocess.run(ping, capture_output=True, text=True)
+            ipregex = re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", runping.stdout)
+            ipwebmail = ipregex.group(0)
             
-            print (ipwebmail)
             db = get_db()
             error = None
-            vpsname = db.execute(
+            vpslook = db.execute(
                 'SELECT vpsname FROM vps WHERE ip = ?', (ipwebmail,)
             ).fetchone()
             
+
         if error != None:
             flash(error)
         return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport)
