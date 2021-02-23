@@ -32,11 +32,10 @@ def emailconf():
             
             db = get_db()
             error = None
-            vpslook = db.execute(
-                'SELECT vpsname FROM vps WHERE ip = ?', (ipwebmail,)
+            row = db.execute(
+                'SELECT * FROM vps WHERE ip = ?', (ipwebmail,)
             ).fetchone()
-            
-
+            vpsname = row['vpsname']
         if error != None:
             flash(error)
         return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport)
