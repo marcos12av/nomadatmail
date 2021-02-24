@@ -11,32 +11,42 @@ def emailconf():
     if request.method == 'POST':
         email = request.form['email']
         protocol = request.form['protocol']
-        if protocol == "imap":
-            inport = "5xxii"
-            outport = "5xxio"
-            error = None
-        elif protocol == "pop": 
-            inport = "5xxpi"
-            outport = "5xxpo"
-            error = None
+        ipwebmail = validaip(email)
+        error = None
+        if ipwebmail[0] == 'tupla':
+            error = ipwebmail[1]
         else:
-            error = 'Datos no validos'
-        if not email:
-            error = 'Favor de ingresar un email valido'
-        if error is None:
-            dominio = "webmail." + email[(email.find("@")+1):]
-            ping = ['ping', '-c', '1', dominio]
-            runping = subprocess.run(ping, capture_output=True, text=True)
-            ipregex = re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", runping.stdout)
-            ipwebmail = ipregex.group(0)
-            
             db = get_db()
-            error = None
             row = db.execute(
                 'SELECT * FROM vps WHERE ip = ?', (ipwebmail,)
             ).fetchone()
-            vpsname = row['vpsname']
-        if error != None:
-            flash(error)
-        return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport)
-    return render_template('email/emailform.html')
+            if row['vpsname'] is None:
+                error = "Cuenta de correo no esta en nuestros sistemas"
+            else:
+                if protocol == "IMAP":
+                    inport = "5xxii"
+                    outport = "5xxio"
+                elif protocol == "POP": 
+                    inport = "5xxpi"
+                    outport = "5xxpo"
+                vpsname = row['vpsname']
+                consul = True
+                return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport, consul=consul)
+        return render_template('email/emailconf.html', error=error)
+    return render_template('email/emailconf.html')
+
+def validaip(email):
+    dominio = "webmail." + email[(email.find("@")+1):]
+    ping = ['ping', '-c', '1', dominio]
+    runping = subprocess.run(ping, capture_output=True, text=True)
+    if runping.stdout:
+        ipregex = re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", runping.stdout)
+        ipwebmail = ipregex.group(0)
+        return ipwebmail
+    if runping.stderr:
+        error = ('tupla', 'Cuenta de correo no esta en nuestros sistemas')
+        return error
+    else:
+        error = ('tupla', 'Algo salio mal')
+        return error
+    
