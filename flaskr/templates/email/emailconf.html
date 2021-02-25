@@ -1,19 +1,27 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Buscar{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
-<form method="post">
-  <label for="email">Correo:</label>
-  <input type="email" id="email" name="email" placeholder="example@example.com" required>
-  <input type="radio" id="imap" name="protocol" value="IMAP" checked>
-  <label for="imap">IMAP(Default)</label>
-  <input type="radio" id="pop" name="protocol" value="POP" >
-  <label for="pop">POP</label>
-  <input type="submit" value="Buscar">
-</form>
+  <div class="col-9">
+    <div class="container d-flex flex-column align-items-center col-12">
+      <div class="row">
+        <h3>Buscar configuracion</h3>
+      </div>
+      <form class="container" method="post">
+        <div class="row ">
+          <label class="col-sm-2 col-form-label text-end" for="email">Correo:</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="email" id="email" name="email" placeholder="example@example.com" required>
+            <input class="form-check-input" type="radio" id="imap" name="protocol" value="IMAP" checked>
+            <label class="form-check-label" for="imap">IMAP(Default)</label>
+            <input class="form-check-input" type="radio" id="pop" name="protocol" value="POP" >
+            <label class="form-check-label" for="pop">POP</label>
+          </div>
+        </div>
+        <div class="col-sm-12 text-center">
+          <input type="submit" value="Buscar">
+        </div>
+      </form>
+    </div>
   {% if consul %}
     <div>
       <p>Cuenta tipo: {{ protocol }}</p>
@@ -29,4 +37,5 @@
       <p>{{ error }}</p>
     </div>
   {% endif %}
+  </div>
 {% endblock %}

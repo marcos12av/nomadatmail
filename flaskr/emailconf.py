@@ -13,15 +13,15 @@ def emailconf():
         protocol = request.form['protocol']
         ipwebmail = validaip(email)
         error = None
-        if ipwebmail[0] == 'tupla':
-            error = ipwebmail[1]
+        if ipwebmail is None:
+            error = f'Cuenta de correo {email} no esta en nuestros sistemas'
         else:
             db = get_db()
             row = db.execute(
                 'SELECT * FROM vps WHERE ip = ?', (ipwebmail,)
             ).fetchone()
-            if row['vpsname'] is None:
-                error = "Cuenta de correo no esta en nuestros sistemas"
+            if row is None:
+                error = f'Cuenta de correo no esta en nuestros sistemas'
             else:
                 if protocol == "IMAP":
                     inport = "5xxii"
@@ -41,12 +41,7 @@ def validaip(email):
     runping = subprocess.run(ping, capture_output=True, text=True)
     if runping.stdout:
         ipregex = re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", runping.stdout)
-        ipwebmail = ipregex.group(0)
-        return ipwebmail
-    if runping.stderr:
-        error = ('tupla', 'Cuenta de correo no esta en nuestros sistemas')
-        return error
+        return ipregex.group(0)
     else:
-        error = ('tupla', 'Algo salio mal')
-        return error
+        return None
     

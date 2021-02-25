@@ -1,24 +1,40 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Nomadat</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<header>
-  {% block header %}{% endblock %}
-</header>
-<nav>
-  <h1>Nomadat Mail</h1>
-  <ul>
-      <li>Home</li>
-      <li>Tutoriales</li>
-  </ul>
-</nav>
-<aside>
-  <ul>
-    <li>Tutorial1</li>
-  </ul>
-</aside>
-<section class="content">
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<head>
+  <title>{% block title %}{% endblock %} - Nomadat</title>
+  <!--   Boostrap 5  -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <!--   Custom CSS  -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-light" style="background-color: #EAEDED;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="{{ url_for('static', filename='nomadat-logo.png') }}" alt="" width="" height="">
+      </a>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-2 border-end">
+        <aside flex-column>
+          <div>Outlook</div>
+          <a class="nav-link active" href="">Tutorial 1</a>
+          <a class="nav-link active" href="">Tutorial 2</a>
+          <div>Androit</div>
+          <a class="nav-link active" href="">Tutorial 1</a>
+          <a class="nav-link active" href="">Tutorial 2</a>
+          <div>Iphone</div>
+          <a class="nav-link active" href="">Tutorial 1</a>
+          <a class="nav-link active" href="">Tutorial 2</a>
+          <div>Mac Os</div>
+          <a class="nav-link active" href="">Tutorial 1</a>
+          <a class="nav-link active" href="">Tutorial 2</a>
+        </aside>
+      </div>
+      <section class="col-10 bg-light">
+          {% block content %}{% endblock %}
+      </section>
+    </div>
+  </div>
+</body>
