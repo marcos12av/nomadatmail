@@ -24,11 +24,11 @@ def emailconf():
                 error = f'Cuenta de correo no esta en nuestros sistemas'
             else:
                 if protocol == "IMAP":
-                    inport = "5xxii"
-                    outport = "5xxio"
+                    inport = "993, con SSL"
+                    outport = "465 o 587, con SSL"
                 elif protocol == "POP": 
-                    inport = "5xxpi"
-                    outport = "5xxpo"
+                    inport = "995, con SSL"
+                    outport = "465 o 587, con SSL"
                 vpsname = row['vpsname']
                 consul = True
                 return render_template('email/emailconf.html', protocol=protocol, email=email, vpsname=vpsname, inport=inport, outport=outport, consul=consul)
